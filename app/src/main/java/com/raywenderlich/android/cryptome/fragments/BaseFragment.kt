@@ -1,5 +1,6 @@
 package com.raywenderlich.android.cryptome.fragments
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -45,7 +46,7 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
     val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-    readBundle(getArguments())
+    readBundle(arguments)
 
     initRecyclerView(view)
 
@@ -96,10 +97,10 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
     mSwipeRefreshLayout = view.findViewById(R.id.swipe_container)
     mSwipeRefreshLayout.setOnRefreshListener(this)
     mSwipeRefreshLayout.setColorSchemeResources(
-        R.color.colorPrimary,
-        android.R.color.holo_green_dark,
-        android.R.color.holo_orange_dark,
-        android.R.color.holo_blue_dark)
+      R.color.colorPrimary,
+      android.R.color.holo_green_dark,
+      android.R.color.holo_orange_dark,
+      android.R.color.holo_blue_dark)
   }
 
   private fun loadData() {
@@ -107,9 +108,9 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
     Log.d("loadData", "Downloading Data ...")
 
     val disposable = Observable.interval(INITIAL_DELAY_IN_MILLISECONDS, INTERVAL_IN_MILLISECONDS,
-        TimeUnit.MILLISECONDS)
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(this::updateCryptoData, this::onError)
+      TimeUnit.MILLISECONDS)
+      .observeOn(AndroidSchedulers.mainThread())
+      .subscribe(this::updateCryptoData, this::onError)
 
     Log.d("loadData", "Disposable added!")
 
@@ -121,18 +122,19 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
     Log.d("onError", "OnError in Observable Time: $throwable")
   }
 
+  @SuppressLint("CheckResult")
   private fun updateCryptoData(aLong: Long) {
 
     mSwipeRefreshLayout.isRefreshing = true
 
     val observable: Observable<List<CryptoData>> = viewModel.getCryptoData(currencies)
     observable.subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
-        .subscribe({
-          Log.d("updateCryptoData", "Received UIModel $it users.")
-          handleResponse(it)
-        }, {
-          handleError(it)
-        })
+      .subscribe({
+        Log.d("updateCryptoData", "Received UIModel $it users.")
+        handleResponse(it)
+      }, {
+        handleError(it)
+      })
   }
 
   private fun handleError(t: Throwable) {
