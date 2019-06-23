@@ -84,6 +84,7 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
 
   override fun onStop() {
     super.onStop()
+
     disposables.clear()
 
     Log.d("onStop", "Clear Disposables")
@@ -104,7 +105,6 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
   }
 
   private fun loadData() {
-
     Log.d("loadData", "Downloading Data ...")
 
     val disposable = Observable.interval(INITIAL_DELAY_IN_MILLISECONDS, INTERVAL_IN_MILLISECONDS,
@@ -115,16 +115,9 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
     Log.d("loadData", "Disposable added!")
 
     disposables.add(disposable)
-
   }
 
-  private fun onError(throwable: Throwable) {
-    Log.d("onError", "OnError in Observable Time: $throwable")
-  }
-
-  @SuppressLint("CheckResult")
   private fun updateCryptoData(aLong: Long) {
-
     mSwipeRefreshLayout.isRefreshing = true
 
     val observable: Observable<List<CryptoData>> = viewModel.getCryptoData(currencies)
@@ -137,18 +130,21 @@ open class BaseFragment : Fragment(), CryptoDataAdapter.Listener, SwipeRefreshLa
       })
   }
 
-  private fun handleError(t: Throwable) {
-    Log.d("handlleError", "Error: $t")
+  private fun onError(throwable: Throwable) {
+    Log.d("onError", "OnError in Observable Time: $throwable")
   }
 
   private fun handleResponse(cryptoDataList: List<CryptoData>) {
-
     cryptoDataAdapter = CryptoDataAdapter(ArrayList(cryptoDataList), this)
     cryptocurrencyList.adapter = cryptoDataAdapter
 
     mSwipeRefreshLayout.isRefreshing = false
 
     Log.d("handleResponse", "We have ${disposables.size()} disposables")
+  }
+
+  private fun handleError(t: Throwable) {
+    Log.d("handlleError", "Error: $t")
   }
 
   override fun onItemClick(cryptoData: CryptoData) {
