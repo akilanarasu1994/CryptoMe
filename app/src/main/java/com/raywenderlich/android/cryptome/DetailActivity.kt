@@ -18,7 +18,7 @@ class DetailActivity : AppCompatActivity() {
     setupStatusBar()
   }
 
-  private fun loadWebView(crytoType: String) {
+  private fun loadWebView(cryptoType: String) {
     val webView: WebView = findViewById(R.id.webView)
     webView.webViewClient = object : WebViewClient() {
       override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
@@ -27,7 +27,7 @@ class DetailActivity : AppCompatActivity() {
       }
     }
 
-    webView.loadUrl("https://www.tradingview.com/symbols/${crytoType.toUpperCase()}USD/")
+    webView.loadUrl("https://www.tradingview.com/symbols/${cryptoType.toUpperCase()}USD/")
   }
 
   private fun setupToolBar() {
